@@ -1,88 +1,44 @@
-
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import db from "./firebase/firebaseConfig";
-//{name: doc.name, ...doc.data()}
+import React, { useState } from "react";
+import styled from "styled-components";
+import UserTable from "./tables/UserTable";
 
 const Home = () => {
-    const [task, setTask ] = useState([])
+  //ADD CONTACT
 
-    useEffect(() => {
+  const usersdata = [
+    // { id: 1, name: "juancarlo", user: "spiritu" },
+    // { id: 2, name: "faca", user: "faca66" },
+    // { id: 3, name: "robert", user: "robert44" },
+  ];
 
-    const obtenerDatos = async () => {
-        const datos = await getDocs(collection(db, 'usuarios'))
-    try{
-        const arrayData = datos.docs.map(doc => ({id: doc.id, ...doc.data()}))
-       setTask(arrayData)
-  
-    }
-    catch(error){
-        console.log(error)
-    }
+  const [users, setUsers] = useState(usersdata);
 
-   
-}
-obtenerDatos()
-}, [])
-
-//ADD HANDLER
-const add = async (e) => {
-    e.preventDefault()
-    if(!task.trim()){
-        console.log('sin texto')
-        return
-    }
-    console.log(task)
+//ADD USER
+const add = (user) =>{
+    user.id = users.length + 1;
+    setUsers([...users, user])
 }
 
+  return (
+    <HomeStyled>
+      <div>
+        <h1>Add Users</h1>
+      </div>
+      <div>
+        <h1>View Users</h1>
+        <UserTable users={users} />
+      </div>
+    </HomeStyled>
+  );
+};
 
-return(<div>
-    
-    <div >
-    <div >
-        <div >
-            <h3>Lista de Tareas</h3>
-            <ul >
-            {
-                task.map(item => (
-                <li className="list-group-item" key={item.id}>
-                  <span>{item.name}</span>
-                    <button 
-                        className="btn btn-danger btn-sm float-right"
-                    >
-                        Eliminar
-                    </button>
-                    <button 
-                        className="btn btn-warning btn-sm float-right mr-2"
-                    >
-                        Editar
-                    </button>
-                </li>
-                ))
-            }
-            </ul>
-        </div>
-        <div className="col-md-6">
-            formulario
-        </div>
-        <form onSubmit={add}>
-    <input 
-        type="text" 
-        className="form-control mb-2"
-        placeholder='Ingrese Tarea'
-        value={task}
-        onChange={e => setTask(e.target.value)}
-    />
-    <button 
-        type='submit'
-        className="btn btn-dark btn-block btn-sm"
-    >
-        Agregar
-    </button>
-</form>
-    </div>
-</div>
-    </div>)
-}
+const HomeStyled = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: grey;
 
-export default Home
+  height: 100vh;
+`;
+
+export default Home;
